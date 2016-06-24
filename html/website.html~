@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Schools Fitbit</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
+<style type="text/css">
+    .bs-example{
+    margin: 20px;
+    }
+</style>
+</head>
+<body>
+<div class="bs-example">
+    <form id="form">
+      <h4 align="center"> Login with your Smart Schools credentials to complete the process </h4>
+      <br>
+      <div class="form-group">
+            <label for="inputEmail">Smart Schools Email</label>
+            <input id="email" type="email" class="form-control" id="inputEmail" placeholder="Email" name="email">
+	    <span class="error" id="emailError"></span>
+      </div>
+      <div class="form-group">
+	<label for="inputPassword">Smart Schools Password</label>
+        <input id="passkey" type="password" class="form-control" id="inputPassword" placeholder="Password" name="passkey">
+	<span class="error" id="passwordError"></span>
+      </div>
+      <br>
+      <div align="center">
+	<button id="login" name="login" type="button" class="btn btn-primary">Login</button>
+      </div>
+      <span class="error" id="databaseError"></span>
+      <span class="error" id="repeatError"></span>
+    </form>
+
+</div>
+</body>
+<br>
+<script type="text/javascript">
+  $(document).ready(function(){
+  	$("#login").click(function(){
+  		var email = $("#email").val();
+  		var passkey = $("#passkey").val();
+       		$.ajax({
+       			type: 'POST',
+       			url: 'weblogin.php',
+       			data: "email=" + email + "&passkey=" + passkey,
+  			success: function(data){
+       				if(data == "good"){
+       					var currentURL = window.location.href;
+       					var URLarray = currentURL.split("&access_token=");
+       					var accesstoken = URLarray[1];
+  					$.ajax({
+       						type:'POST',
+  						url: 'storetoken.php',
+       						data: "email=" + email + "&accesstoken=" + accesstoken,
+       						success: function(data){
+  							
+  							$("#databaseError").text('');
+  							$("#repeatError").text('');
+			
+  							if(data == "success"){
+       								var myWindow = window.open("http://ec2-54-87-187-219.compute-1.amazonaws.com/confirmation.html", "_self");
+       							}else{
+  								var arr = data.split(",");
+  								var errorId = arr[0];
+  								var errorMessage = arr[1];
+  								$(errorId).text(errorMessage);
+  							}
+       						}
+  					});
+  				}else{
+
+       					$("#emailError").text('');
+  					$("#passwordError").text('');
+       					var arr = data.split(",");
+       					var errorId = arr[0];
+       					var errorMessage = arr[1];
+       					$(errorId).text(errorMessage);       
+  				}
+  			}
+
+       		});
+       
+  	});
+  });
+</script>
+</html>                                
+
