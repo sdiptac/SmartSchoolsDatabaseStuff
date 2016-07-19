@@ -42,7 +42,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
   	$("#login").click(function(){
-  		var email = $("#email").val();
+    		var email = $("#email").val();
   		var passkey = $("#passkey").val();
        		$.ajax({
        			type: 'POST',
@@ -50,18 +50,23 @@
        			data: "email=" + email + "&passkey=" + passkey,
   			success: function(data){
        				if(data == "good"){
-       					var currentURL = window.location.href;
-       					var URLarray = currentURL.split("&access_token=");
-       					var accesstoken = URLarray[1];
+       					var currenturl = window.location.href;
+       					var urlarray = currenturl.split("access_token=");
+  					var urlarray2 = urlarray[1].split("&");
+  					var accesstoken = urlarray2[0];
+					urlarray = currenturl.split("user_id=");
+  					urlarray2 = urlarray[1].split("&");
+					var fitbitid = urlarray2[0];
+					
   					$.ajax({
        						type:'POST',
   						url: 'storetoken.php',
-       						data: "email=" + email + "&accesstoken=" + accesstoken,
+       						data: "email=" + email + "&accesstoken=" + accesstoken + "&fitbitid=" + fitbitid,
        						success: function(data){
   							
   							$("#databaseError").text('');
   							
-  							if(data == "success"){
+  							if(data == "good"){
        								var myWindow = window.open("http://ec2-54-87-187-219.compute-1.amazonaws.com/confirmation.html", "_self");
        							}else{
   								var arr = data.split(",");

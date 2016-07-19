@@ -1,0 +1,22 @@
+<?php
+        $config = parse_ini_file('../config.ini');
+        mysql_connect($config['endpoint'],$config['username'],$config['password']);
+        mysql_select_db($config['dbname']);
+
+        $bssid = $_REQUEST['bssid'];
+  	$ssid = $_REQUEST['ssid'];
+        $building = $_REQUEST['building'];
+	$room = $_REQUEST['room'];
+	$apnumber = $_REQUEST['apnumber'];        
+
+	$query = "update accesspoint set room = '$room', building = '$building', APNUMBER = '$apnumber' where bssid = '$bssid' and ssid = '$ssid'";
+
+        $res = mysql_query($query);
+        if(mysql_affected_rows() > 0){
+                echo 0;
+        }else{
+		echo 1;
+	}
+
+	mysql_close();
+?>

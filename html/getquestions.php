@@ -12,16 +12,17 @@
 		return;
 	}
 	$userid = mysql_fetch_row($res)[0];
-	$query = "select * from
+	$query ="select * from
 	user_event
 	natural join event
 	natural join questions_event
 	natural join questions
-	where userid = 42
-	and questionid
+	where userid = '$userid'
+	and (eventid,questionid)
 	not in
-	(select questionid
-	from questions_feedback)";
+	(select distinct eventid,questionid
+	from questions_feedback natural join feedback_event)";
+
 	$res = mysql_query($query);
 	while ($row = mysql_fetch_assoc($res)) {
 	        

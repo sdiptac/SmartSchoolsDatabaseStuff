@@ -1,0 +1,24 @@
+<?php
+	$config = parse_ini_file('../config.ini');
+	mysql_connect($config['endpoint'],$config['username'],$config['password']);
+	mysql_select_db($config['dbname']);
+
+	//$email = $_REQUEST['email'];
+	$email = 'jk@estimote.com';
+	echo $email;
+	$query = "select userID from user where email = 'jk@estimote.com'";
+	if(mysql_num_rows($query) == 0){
+		echo 4;
+		mysql_close();
+		return;
+	}
+	$userid = mysql_fetch_row($query)[0];
+	$query = "select * from user_event natural join event natural join questions_event where email = '$email' and questionid not in (select questionid from questions_feedback)";	
+	while ($row = mysql_fetch_row($query)) {
+	        
+		$res[] = array($row[0], $row[1], $row[2], $row[3], $row[4], $row[5]);
+	}
+	echo $res;
+
+     	mysql_close();
+?>
