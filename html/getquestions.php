@@ -18,6 +18,7 @@
 	natural join questions_event
 	natural join questions
 	where userid = '$userid'
+	and isExpired = 'f'
 	and (eventid,questionid)
 	not in
 	(select distinct eventid,questionid

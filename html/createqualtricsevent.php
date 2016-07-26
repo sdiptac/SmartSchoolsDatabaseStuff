@@ -13,6 +13,25 @@
 	
         $userid = mysqli_fetch_row($res)[0];
 	
+	$eventstoexpire = "select eventid from user_event where userid = '$userid'";
+	$res = mysqli_query($link,$eventstoexpire);
+	while ($row = mysqli_fetch_assoc($res)) {
+
+                $info[] = $row;
+        }
+	foreach ($info as $eventid){
+		$eventid = $eventid["eventid"];
+		$expirequery = "update event set isExpired = 't' where eventid = '$eventid'";
+		if(mysqli_query($link, $expirequery)) {
+			do{
+				if($res3 = mysqli_store_result($link)) {
+					 mysqli_free_result($res3);
+				}
+			} while(mysqli_more_results($link) && mysqli_next_result($link));
+		}
+	}
+	unset($eventid); 	
+
 	$query = "select questionid from questions where groupid = 1";
 	$res = mysqli_query($link,$query);
         while ($row = mysqli_fetch_assoc($res)) {

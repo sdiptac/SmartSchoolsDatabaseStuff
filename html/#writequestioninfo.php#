@@ -1,0 +1,23 @@
+<?php
+	$config = parse_ini_file('../config.ini');
+        mysql_connect($config['endpoint'],$config['username'],$config['password']);
+        mysql_select_db($config['dbname']);
+
+        $starttime = $_REQUEST['starttime'];
+        $endtime = $_REQUEST['endtime'];
+	$min = $_REQUEST['min'];
+	$max = $_REQUEST['max';
+        $query = "select * from questions_time_number";
+        $res = mysql_query($query);
+        if(mysql_num_rows($res) == 0){
+                echo 4;
+        }else{
+                while ($row = mysql_fetch_assoc($res)) {
+
+                $info[] = $row;
+        }
+        echo json_encode($info);
+        }
+
+        mysql_close();
+?>
